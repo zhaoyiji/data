@@ -27,6 +27,8 @@ T1305 = 785
 T1500 = 900
 T1530 = 930
 
+REPEAT = 3
+
 
 class KLine(object):
     def __init__(self, code):
@@ -105,14 +107,13 @@ class KLine1Min(KLine):
                 res = self._set_max_min(r[NOW])
                 if res is False:
                     self._count += 1
-                    if self._count == 3:
+                    if self._count == REPEAT:
                         k1 = [self.high, self.low, self.closed, self.datetime, self.minute]
                         self._count = 0
                         self._mark = True
 
                 self.datetime = dt  # update the datetime
 
-        print k1
         return k1
 
     def store(self, k):
