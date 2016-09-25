@@ -69,7 +69,7 @@ class KLine(object):
         if curr > self.high:
             self.high = curr
             mark = True
-        elif curr < self.low:
+        if curr < self.low:
             self.low = curr
             mark = True
 
@@ -87,7 +87,8 @@ class KLine1Min(KLine):
         KLine.__init__(self, code)
 
     def get_kline(self, data):
-        r = [float(data[RAW_NOW]), data[RAW_DATE], data[RAW_TIME]]
+        # r = [float(data[RAW_NOW]), data[RAW_DATE], data[RAW_TIME]
+        r = [data[NOW], data[DATE], data[TIME]]
         k1 = []
         dt = r[DATE] + " " + r[TIME]
         # if dt == self.datetime:  # desert the same record, 这里不能丢弃,丢弃会影响5分钟K线的处理
@@ -289,61 +290,72 @@ class KLineMonth(KLine):
 #     pk = kline.get_peek(250)
 #     print pk
 
-# if __name__ == "__main__":
-#     rec0 = [10.06, '2016-08-15', '9:24:02']
-#     rec1 = [10.020, '2016-08-15', '9:25:02']
-#     rec2 = [10.00, '2016-08-15', '9:26:02']
-#     rec3 = [10.02, '2016-08-15', '9:27:02']
-#     rec4 = [10.50, '2016-08-15', '9:28:03']
-#     rec5 = [10.40, '2016-08-15', '9:29:02']
-#     rec6 = [10.10, '2016-08-15', '9:30:03']
-#     rec7 = [10.01, '2016-08-15', '9:31:04']
-#     rec8 = [10.60, '2016-08-15', '9:32:06']
-#     rec9 = [10.60, '2016-08-15', '9:35:04']
-#     rec10 = [10.01, '2016-08-15', '9:36:06']
-#     kline1 = KLine1Min("sh000001")
-#     kline5 = KLine5Min("sh000001")
-#     k1 = kline1.get_kline(rec0)
-#     k5 = kline5.get_kline(k1)
-#     print k5
-#     kline1.store(k1)
-#     k1 = kline1.get_kline(rec1)
-#     k5 = kline5.get_kline(k1)
-#     print k5
-#     kline1.store(k1)
-#     k1 = kline1.get_kline(rec2)
-#     k5 = kline5.get_kline(k1)
-#     print k5
-#     kline1.store(k1)
-#     k1 = kline1.get_kline(rec3)
-#     k5 = kline5.get_kline(k1)
-#     print k5
-#     kline1.store(k1)
-#     k1 = kline1.get_kline(rec4)
-#     k5 = kline5.get_kline(k1)
-#     print k5
-#     kline1.store(k1)
-#     k1 = kline1.get_kline(rec5)
-#     k5 = kline5.get_kline(k1)
-#     print k5
-#     kline1.store(k1)
-#     k1 = kline1.get_kline(rec6)
-#     k5 = kline5.get_kline(k1)
-#     print k5
-#     kline1.store(k1)
-#     k1 = kline1.get_kline(rec7)
-#     k5 = kline5.get_kline(k1)
-#     print k5
-#     kline1.store(k1)
-#     k1 = kline1.get_kline(rec8)
-#     k5 = kline5.get_kline(k1)
-#     print k5
-#     kline1.store(k1)
-#     k1 = kline1.get_kline(rec9)
-#     k5 = kline5.get_kline(k1)
-#     print k5
-#     kline1.store(k1)
-#     k1 = kline1.get_kline(rec10)
-#     k5 = kline5.get_kline(k1)
-#     print k5
-#     kline1.store(k1)
+if __name__ == "__main__":
+    rec0 = [10.06, '2016-08-15', '14:54:02']
+    rec1 = [10.020, '2016-08-15', '14:55:02']
+    rec2 = [10.00, '2016-08-15', '14:55:03']
+    rec3 = [10.02, '2016-08-15', '14:56:02']
+    rec4 = [10.50, '2016-08-15', '14:57:03']
+    rec5 = [10.40, '2016-08-15', '14:58:02']
+    rec6 = [10.10, '2016-08-15', '14:59:03']
+    rec7 = [10.01, '2016-08-15', '14:59:04']
+    rec8 = [10.58, '2016-08-15', '15:01:06']
+    rec9 = [10.58, '2016-08-15', '15:02:04']
+    rec10 = [10.58, '2016-08-15', '15:03:04']
+    kline1 = KLine1Min("sh000001")
+    kline5 = KLine5Min("sh000001")
+    k1 = kline1.get_kline(rec0)
+    k5 = kline5.get_kline(k1)
+    print k5
+    kline1.store(k1)
+    kline5.store(k5)
+    k1 = kline1.get_kline(rec1)
+    k5 = kline5.get_kline(k1)
+    print k5
+    kline1.store(k1)
+    kline5.store(k5)
+    k1 = kline1.get_kline(rec2)
+    k5 = kline5.get_kline(k1)
+    print k5
+    kline1.store(k1)
+    kline5.store(k5)
+    k1 = kline1.get_kline(rec3)
+    k5 = kline5.get_kline(k1)
+    print k5
+    kline1.store(k1)
+    kline5.store(k5)
+    k1 = kline1.get_kline(rec4)
+    k5 = kline5.get_kline(k1)
+    print k5
+    kline1.store(k1)
+    kline5.store(k5)
+    k1 = kline1.get_kline(rec5)
+    k5 = kline5.get_kline(k1)
+    print k5
+    kline1.store(k1)
+    kline5.store(k5)
+    k1 = kline1.get_kline(rec6)
+    k5 = kline5.get_kline(k1)
+    print k5
+    kline1.store(k1)
+    kline5.store(k5)
+    k1 = kline1.get_kline(rec7)
+    k5 = kline5.get_kline(k1)
+    print k5
+    kline1.store(k1)
+    kline5.store(k5)
+    k1 = kline1.get_kline(rec8)
+    k5 = kline5.get_kline(k1)
+    print k5
+    kline1.store(k1)
+    kline5.store(k5)
+    k1 = kline1.get_kline(rec9)
+    k5 = kline5.get_kline(k1)
+    print k5
+    kline1.store(k1)
+    kline5.store(k5)
+    k1 = kline1.get_kline(rec10)
+    k5 = kline5.get_kline(k1)
+    print k5
+    kline1.store(k1)
+    kline5.store(k5)

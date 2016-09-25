@@ -71,6 +71,7 @@ class RealData(threading.Thread):
         self._url = ""
         self._running = True
         self._kline = None
+        self._kline5 = None
 
     def start_analyze(self):
         """Start Real Time Data Analyze
@@ -104,16 +105,21 @@ class RealData(threading.Thread):
 
     def run(self):
         self._kline = k_line.KLine1Min(self._code)
+        self._kline5 = k_line.KLine5Min(self._code)
         remote_data = RawData()
         while self._running:
             raw_record = remote_data.fetch(self._url)  # fetch raw data
             rec = record.Record(raw_record[0])
             k = self._kline.get_kline(rec.get_data())
             self._kline.store(k)
+            k5 = self._kline5.get_kline(k)
+            self._kline5.store(k5)
             time.sleep(5)
 
         del self._kline
         self._kline = None
+        del self._kline5
+        self._kline5 = None
 
 
 def analyze():
