@@ -19,6 +19,9 @@ LOW = 1
 CLOSED = 2
 DT = 3
 MIN = 4
+MARK = 5
+MARK_END = "END"
+MARK_ING = "ING"
 
 T0935 = 575
 T1130 = 690
@@ -98,7 +101,7 @@ class KLine1Min(KLine):
             if self.minute == 0:  # check if the first record
                 self.high = self.low = r[NOW]
             else:
-                k1 = [self.high, self.low, self.closed, self.datetime, self.minute]
+                k1 = [self.high, self.low, self.closed, self.datetime, self.minute, MARK_ING]
                 self.high = self.low = r[NOW]  # next k line, reset the high and low
             self.minute = minute  # update the minute
             self.datetime = dt  # update the datetime
@@ -108,7 +111,7 @@ class KLine1Min(KLine):
                 if res is False:
                     self._count += 1
                     if self._count == REPEAT:
-                        k1 = [self.high, self.low, self.closed, self.datetime, self.minute]
+                        k1 = [self.high, self.low, self.closed, self.datetime, self.minute, MARK_END]
                         self._count = 0
                         self._mark = True
 
@@ -177,18 +180,18 @@ class KLine5Min(KLine):
         elif minute < T1130:
             if self._mark_0935:  # (1), 此时_mark5_04, _mark5_59必然是False
                 self._mark_0935 = False
-                k5 = [self.high, self.low, self.closed, self.datetime, self.minute]
+                k5 = [self.high, self.low, self.closed, self.datetime, self.minute, MARK_ING]
 
             if (minute % 10) / 5 == 0:
                 self._mark_04 = True
                 if self._mark_59:  # (2) 此处跟（1）不可能同时发生
                     self._mark_59 = False
-                    k5 = [self.high, self.low, self.closed, self.datetime, self.minute]
+                    k5 = [self.high, self.low, self.closed, self.datetime, self.minute, MARK_ING]
             else:
                 self._mark_59 = True
                 if self._mark_04:  # (3) 此处跟（1）不可能同时发生
                     self._mark_04 = False
-                    k5 = [self.high, self.low, self.closed, self.datetime, self.minute]
+                    k5 = [self.high, self.low, self.closed, self.datetime, self.minute, MARK_ING]
 
             self._set_max_min(k[NOW])
             self.minute = minute
@@ -196,11 +199,11 @@ class KLine5Min(KLine):
         elif minute < T1200:  # 时间统一标注为 "xxxx-xx-xx 11:29:59"
             if self._mark_59:  # 25-29的数据还没有完成,如果完成了就把数据丢掉
                 res = self._set_max_min(k[NOW])
-                if res is False:  # 不存在数据更新就认为结束了
+                if res is False or k[MARK] == MARK_END:  # 不存在数据更新就认为结束了
                     self._mark_59 = False
                     dt = k[DT].split(' ')
                     st = dt[0] + " " + "11:29:59"
-                    k5 = [self.high, self.low, self.closed, st, self.minute]
+                    k5 = [self.high, self.low, self.closed, st, self.minute, MARK_END]
         elif minute < T1305:
             self._set_max_min(k[NOW])
             self.minute = minute
@@ -209,18 +212,18 @@ class KLine5Min(KLine):
         elif minute < T1500:
             if self._mark_1305:
                 self._mark_1305 = False
-                k5 = [self.high, self.low, self.closed, self.datetime, self.minute]
+                k5 = [self.high, self.low, self.closed, self.datetime, self.minute, MARK_ING]
 
             if (minute % 10) / 5 == 0:
                 self._mark_04 = True
                 if self._mark_59:
                     self._mark_59 = False
-                    k5 = [self.high, self.low, self.closed, self.datetime, self.minute]
+                    k5 = [self.high, self.low, self.closed, self.datetime, self.minute, MARK_ING]
             else:
                 self._mark_59 = True
                 if self._mark_04:
                     self._mark_04 = False
-                    k5 = [self.high, self.low, self.closed, self.datetime, self.minute]
+                    k5 = [self.high, self.low, self.closed, self.datetime, self.minute, MARK_ING]
 
             self._set_max_min(k[NOW])
             self.minute = minute
@@ -228,11 +231,11 @@ class KLine5Min(KLine):
         elif minute < T1530:  # 时间统一标注为 "xxxx-xx-xx 14:59:59"
             if self._mark_59:  # 25-29的数据还没有完成,如果完成了就把数据丢掉
                 res = self._set_max_min(k[NOW])
-                if res is False:  # 不存在数据更新就认为结束了
+                if res is False or k[MARK] == MARK_END:  # 不存在数据更新活着1分钟K线带有结束标志就认为结束了
                     self._mark_59 = False
                     dt = k[DT].split(' ')
                     st = dt[0] + " " + "14:59:59"
-                    k5 = [self.high, self.low, self.closed, st, self.minute]
+                    k5 = [self.high, self.low, self.closed, st, self.minute, MARK_END]
         else:
             return []
 
