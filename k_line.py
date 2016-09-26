@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 import sqlite3
+import config
 
 NOW = 0
 DATE = 1
@@ -30,7 +31,7 @@ T1305 = 785
 T1500 = 900
 T1530 = 930
 
-REPEAT = 3
+REPEAT = 13 
 
 
 class KLine(object):
@@ -87,8 +88,10 @@ class KLine1Min(KLine):
         KLine.__init__(self, code)
 
     def get_kline(self, data):
-        # r = [float(data[RAW_NOW]), data[RAW_DATE], data[RAW_TIME]
-        r = [data[NOW], data[DATE], data[TIME]]
+        r = [float(data[RAW_NOW]), data[RAW_DATE], data[RAW_TIME]]
+	print "raw_data: ", r
+	config.LOGGER.info("raw_data: %s %s %s", str(r[0]), str(r[1]), str(r[2]))
+        # r = [data[NOW], data[DATE], data[TIME]]
         k1 = []
         dt = r[DATE] + " " + r[TIME]
         # if dt == self.datetime:  # desert the same record, 这里不能丢弃,丢弃会影响5分钟K线的处理
@@ -122,7 +125,8 @@ class KLine1Min(KLine):
 
     def store(self, k):
         if len(k):
-            # print k
+            print "k1: ",k
+	    config.LOGGER.info("k1: %s %s %s %s", str(k[0]), str(k[1]), str(k[2]), str(k[3]))
             try:
                 self._conn.execute("INSERT INTO min1 (high, low, closed, fetch_time) VALUES (?, ?, ?, ?)",
                                    (k[HIGH], k[LOW], k[CLOSED], k[DT]))
@@ -244,7 +248,8 @@ class KLine5Min(KLine):
 
     def store(self, k):
         if len(k):
-            # print k
+            print "k5: ",k
+	    config.LOGGER.info("k5: %s %s %s %s", str(k[0]), str(k[1]), str(k[2]), str(k[3]))
             try:
                 self._conn.execute("INSERT INTO min5 (high, low, closed, fetch_time) VALUES (?, ?, ?, ?)",
                                    (k[HIGH], k[LOW], k[CLOSED], k[DT]))
